@@ -129,7 +129,8 @@ class UdmClient:
         rule_id = next((x["_id"] for x in rules if x["dest_port"] == port), None)
         if rule_id is not None:
             self.session.delete(
-                f"{self.base_url}/{self.NETWORK_API_SLUG}/rest/portforward/{rule_id}"
+                f"{self.base_url}/{self.NETWORK_API_SLUG}/rest/portforward/{rule_id}",
+                verify=self.verify,
             )
             print(f"Successfully deleted port forwarding rule")
         else:
@@ -147,7 +148,7 @@ class UdmClient:
         interface: str = "wan",
         source: str = "any",
         log: bool = False,
-        replace: bool = False
+        replace: bool = False,
     ):
         protocol = ""
         if tcp:
@@ -165,7 +166,7 @@ class UdmClient:
             name=name,
             pfwd_interface=interface,
             proto=protocol,
-            src=source
+            src=source,
         )
         print(f"Creating portforwarding rule: {data}")
         if replace is True:
@@ -173,5 +174,6 @@ class UdmClient:
         self.session.post(
             f"{self.base_url}/{self.NETWORK_API_SLUG}/rest/portforward",
             data=data,
+            verify=self.verify,
         )
         print("Successfully created portforwarding rule")
