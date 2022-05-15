@@ -126,7 +126,7 @@ class UdmClient:
     def delete_portfowarding_rule(self, port: int):
         print(f"Deleting port forwarding rule for port {port}")
         rules = self.get_portforwarding_rules()
-        rule_id = next((x["_id"] for x in rules if x["dest_port"] == port), None)
+        rule_id = next((x["_id"] for x in rules if x["dst_port"] == port), None)
         if rule_id is not None:
             self.session.delete(
                 f"{self.base_url}/{self.NETWORK_API_SLUG}/rest/portforward/{rule_id}",
