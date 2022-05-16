@@ -18,12 +18,13 @@ class UdmClient:
     def base_url(self):
         return f"https://{self.ip_address}:443"
 
-    def login(self, x_csrf_token: Optional[str]) -> None:
+    def login(self) -> None:
         print("Logging into UDM...")
         if self.verify:
             self.session.verify = self.cert_path
-        if x_csrf_token is not None:
-            self.session.headers['X-CSRF-TOKEN'] = x_csrf_token
+        response = self.session.get(f"{self.base_url}/api/system")
+        x_csrf_token = response.headers["x-csrf-token"]
+        self.session.headers["x-csrf-token"] = x_csrf_token
         self.session.post(
             url=f"{self.base_url}/api/auth/login",
             data=dict(username=self.username, password=self.password, strict=True),
@@ -133,10 +134,7 @@ class UdmClient:
                 f"{self.base_url}/proxy/network/api/s/default/rest/portforward/{rule_id}",
                 json={},
                 verify=self.verify,
-                headers={
-                    **self.session.headers,
-                    'Content-Type': 'application/json'
-                }
+                headers={**self.session.headers, "Content-Type": "application/json"},
             )
             print(f"Deleted port forwarding rule; server response: {response.text}")
         else:
