@@ -13,8 +13,6 @@ class UdmClient:
 
     session = requests.Session()
 
-    NETWORK_API_SLUG = "proxy/network/api/s/default"
-
     @property
     def base_url(self):
         return f"https://{self.ip_address}:443"
@@ -44,11 +42,11 @@ class UdmClient:
 
     def get_sysinfo(self) -> List[dict]:
         print("Retrieving sysinfo from UDM...")
-        return self.__get_data(f"{self.NETWORK_API_SLUG}/stat/sysinfo")
+        return self.__get_data(f"proxy/network/api/s/default/stat/sysinfo")
 
     def get_device_data(self) -> List[dict]:
         print("Retrieving device data from UDM...")
-        return self.__get_data(f"{self.NETWORK_API_SLUG}/stat/device")
+        return self.__get_data(f"proxy/network/api/s/default/stat/device")
 
     def get_udm(self) -> dict:
         udm: Optional[dict] = next(
@@ -121,7 +119,7 @@ class UdmClient:
 
     def get_portforwarding_rules(self):
         print("Retrieving port forwarding rules")
-        return self.__get_data(f"{self.NETWORK_API_SLUG}/rest/portforward")
+        return self.__get_data(f"proxy/network/api/s/default/rest/portforward")
 
     def delete_portfowarding_rule(self, port: str):
         print(f"Deleting port forwarding rule for port {port}")
@@ -129,7 +127,8 @@ class UdmClient:
         rule_id = next((x["_id"] for x in rules if x["dst_port"] == port), None)
         if rule_id is not None:
             response = self.session.delete(
-                f"{self.base_url}/{self.NETWORK_API_SLUG}/rest/portforward/{rule_id}",
+                f"{self.base_url}/proxy/network/api/s/default/rest/portforward/{rule_id}",
+                data={},
                 verify=self.verify,
             )
             print(f"Deleted port forwarding rule; server response: {response}")
@@ -161,7 +160,7 @@ class UdmClient:
             dst_port=str(destination_port),
             enabled=enabled,
             fwd=forward_ip,
-            fw_port=str(foward_port),
+            fwd_port=str(foward_port),
             log=log,
             name=name,
             pfwd_interface=interface,
@@ -172,7 +171,7 @@ class UdmClient:
         if replace is True:
             self.delete_portfowarding_rule(port=destination_port)
         response = self.session.post(
-            f"{self.base_url}/{self.NETWORK_API_SLUG}/rest/portforward",
+            f"{self.base_url}/proxy/network/api/s/default/rest/portforward",
             data=data,
             verify=self.verify,
         )
