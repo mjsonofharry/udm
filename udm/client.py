@@ -130,8 +130,12 @@ class UdmClient:
                 f"{self.base_url}/proxy/network/api/s/default/rest/portforward/{rule_id}",
                 json={},
                 verify=self.verify,
+                headers={
+                    **self.session.headers,
+                    'Content-Type': 'application/json'
+                }
             )
-            print(f"Deleted port forwarding rule; server response: {response}")
+            print(f"Deleted port forwarding rule; server response: {response.text}")
         else:
             print("Port forwarding rule not found")
 
@@ -175,4 +179,4 @@ class UdmClient:
             json=data,
             verify=self.verify,
         )
-        print(f"Created portforwarding rule; server response: {response}")
+        print(f"Created portforwarding rule; server response: {response.text}")
