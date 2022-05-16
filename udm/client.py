@@ -128,7 +128,7 @@ class UdmClient:
         if rule_id is not None:
             response = self.session.delete(
                 f"{self.base_url}/proxy/network/api/s/default/rest/portforward/{rule_id}",
-                data={},
+                json={},
                 verify=self.verify,
             )
             print(f"Deleted port forwarding rule; server response: {response}")
@@ -172,7 +172,7 @@ class UdmClient:
             self.delete_portfowarding_rule(port=destination_port)
         response = self.session.post(
             f"{self.base_url}/proxy/network/api/s/default/rest/portforward",
-            data=data,
+            json=data,
             verify=self.verify,
         )
         print(f"Created portforwarding rule; server response: {response}")
