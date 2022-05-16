@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Optional
+from pyparsing import Opt
 import requests
 
 
@@ -17,10 +18,12 @@ class UdmClient:
     def base_url(self):
         return f"https://{self.ip_address}:443"
 
-    def login(self) -> None:
+    def login(self, x_csrf_token: Optional[str]) -> None:
         print("Logging into UDM...")
         if self.verify:
             self.session.verify = self.cert_path
+        if x_csrf_token is not None:
+            self.session.headers['X-CSRF-TOKEN'] = x_csrf_token
         self.session.post(
             url=f"{self.base_url}/api/auth/login",
             data=dict(username=self.username, password=self.password, strict=True),
