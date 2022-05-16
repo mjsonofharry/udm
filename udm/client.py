@@ -123,7 +123,7 @@ class UdmClient:
         print("Retrieving port forwarding rules")
         return self.__get_data(f"{self.NETWORK_API_SLUG}/rest/portforward")
 
-    def delete_portfowarding_rule(self, port: int):
+    def delete_portfowarding_rule(self, port: str):
         print(f"Deleting port forwarding rule for port {port}")
         rules = self.get_portforwarding_rules()
         rule_id = next((x["_id"] for x in rules if x["dst_port"] == port), None)
@@ -139,9 +139,9 @@ class UdmClient:
     def create_portforwarding_rule(
         self,
         name: str,
-        destination_port: int,
+        destination_port: str,
         forward_ip: str,
-        foward_port: int,
+        foward_port: str,
         tcp: bool,
         udp: bool,
         enabled: bool = True,
